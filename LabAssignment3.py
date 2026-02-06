@@ -338,13 +338,8 @@ if __name__=="__main__":
     print("")
     print("\nQuestion A14: ")
 
-    # Train matrix inversion classifier
     w=train_matrix_inversion_classifier(X_train,y_train)
-
-    # Predict on test set
     y_test_pred_matrix=predict_matrix_inversion_classifier(X_test,w)
-
-    # Accuracy
     matrix_accuracy=np.mean(y_test_pred_matrix==y_test)
 
     print("Accuracy of Matrix Inversion Classifier:", matrix_accuracy)
