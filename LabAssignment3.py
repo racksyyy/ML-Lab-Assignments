@@ -92,11 +92,14 @@ def knn_predict(X_train,y_train,X_test,k):  # A10
         predictions.append(pred)
     return np.array(predictions)
 
-def k_vs_accuracy_plot(k_values,accuracies):
-    plt.plot(k_values,accuracies,marker='o')
+def k_vs_accuracy_plot(k_values, test_accuracies, train_accuracies=None):
+    plt.plot(k_values, test_accuracies, marker='o', label='Test Accuracy', color='blue')
+    plt.plot(k_values, train_accuracies, marker='o', label='Train Accuracy', color='red')
     plt.xlabel("Value of k")
     plt.ylabel("Accuracy")
     plt.title("k vs Accuracy for k-NN Classifier")
+    plt.legend()
+    plt.grid(True)
     plt.show()
 
 def compute_confusion_elements(y_true, y_pred):  # A13
@@ -277,15 +280,19 @@ if __name__=="__main__":
     # A11
     print("")
     print("\nQuestion A11: ")
-    k_values=list(range(1,12))
-    accuracies=[]
+    k_values=list(range(1,101))
+    test_accuracies=[]
+    train_accuracies=[]
     for k in k_values:
-        y_pred_k=knn_predict(X_train,y_train,X_test,k)
-        acc=np.mean(y_pred_k==y_test)
-        accuracies.append(acc)
-        print(f"Accuracy for k = {k}: {acc}")
+        y_pred_test=knn_predict(X_train,y_train,X_test,k)
+        y_pred_train=knn_predict(X_train,y_train,X_train,k)
+        test_acc=np.mean(y_pred_test==y_test)
+        train_acc=np.mean(y_pred_train==y_train)
+        test_accuracies.append(test_acc)
+        train_accuracies.append(train_acc)
+        print(f"Accuracy for k = {k}: Test={test_acc:.4f}, Train={train_acc:.4f}")
 
-    k_vs_accuracy_plot(k_values, accuracies)
+    k_vs_accuracy_plot(k_values, test_accuracies, train_accuracies)
 
     # A12
     print("")
