@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import  pandas as pd
 import numpy as np 
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 
 def confusion_matrix():
@@ -79,6 +80,56 @@ def question5():
         plt.title(f"kNN (k={k}) Classification on Test Data")
         plt.show()
 
+def question6():
+    #A3
+    df = pd.read_csv("Data/IMDB-Movie-Data.csv")
+    df = df[['Rating', 'Revenue (Millions)']].dropna()
+    df['Class'] = np.where(df['Rating'] >= 7, 1, 0)
+    X_train = df[['Rating', 'Revenue (Millions)']].values
+    y_train = df['Class'].values
+    plt.figure()
+    plt.scatter(X_train[y_train == 0][:, 0],X_train[y_train == 0][:, 1])
+    plt.scatter(X_train[y_train == 1][:, 0],X_train[y_train == 1][:, 1])
+    plt.xlabel("Rating")
+    plt.ylabel("Revenue (Millions)")
+    plt.title("Training Data (Blue = Class 0, Red = Class 1)")
+    plt.show()
+
+    #A4
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    x_min, x_max = X_train[:, 0].min(), X_train[:, 0].max()
+    y_min, y_max = X_train[:, 1].min(), X_train[:, 1].max()
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.2),np.arange(y_min, y_max, 0.2))
+    X_test = np.c_[xx.ravel(), yy.ravel()]
+    X_test_scaled = scaler.transform(X_test)
+    knn = KNeighborsClassifier(n_neighbors=3)
+    knn.fit(X_train_scaled, y_train)
+    y_pred = knn.predict(X_test_scaled)
+
+    plt.figure()
+    plt.scatter(X_test[y_pred == 0][:, 0],X_test[y_pred == 0][:, 1], s=5)
+    plt.scatter(X_test[y_pred == 1][:, 0],X_test[y_pred == 1][:, 1], s=5)
+    plt.xlabel("Rating")
+    plt.ylabel("Revenue (Millions)")
+    plt.title("kNN Classification (k = 3)")
+    plt.show()
+
+    #A5
+    for k in range(1,11):
+        knn = KNeighborsClassifier(n_neighbors=k)
+        knn.fit(X_train_scaled, y_train)
+        y_pred_k = knn.predict(X_test_scaled)
+        plt.figure()
+        plt.scatter(X_test[y_pred_k == 0][:, 0], X_test[y_pred_k == 0][:, 1], s=5)
+        plt.scatter(X_test[y_pred_k == 1][:, 0],X_test[y_pred_k == 1][:, 1], s=5)
+        plt.xlabel("Rating")
+        plt.ylabel("Revenue (Millions)")
+        plt.title(f"kNN Classification (k = {k})")
+        plt.show()
+
+
+
 def GridSearchCVSearch():
     x_train,y_train=questionA3(1)
     labels_train = np.where(x_train<y_train, 0, 1)
@@ -121,22 +172,22 @@ if __name__ == "__main__":
     print("")
 
     #A4
-    print("Question 4")
+    print("Question A4")
     question4()
     print()
 
     #A5
-    print("Question 5")
+    print("Question A5")
     question5()
     print()
 
     #A6
-    print("Question 6")
-    print("Project data is was used for the above questions")
+    print("Question A6")
+    question6()
     print()
 
     #A7
-    print("Question 7")
+    print("Question A7")
     GridSearchCVSearch()
 
 

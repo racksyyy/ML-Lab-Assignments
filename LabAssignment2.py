@@ -6,8 +6,6 @@ import time
 
 # Main function to run everything
 def main():
-    print("Starting assignment...")
-    
     # A1 - Purchase Data
     print("\nA1: Purchase Data")
     df1 = pd.read_excel('Data/data.xlsx', sheet_name='Purchase data')
